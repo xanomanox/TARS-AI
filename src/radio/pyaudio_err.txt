@@ -1,0 +1,35 @@
+ars-ai) jano@vexcalibur:~/TARS-AI/src/radio $ pip install pyaudio
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting pyaudio
+  Downloading PyAudio-0.2.14.tar.gz (47 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 47.1/47.1 kB 751.8 kB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: pyaudio
+  Building wheel for pyaudio (pyproject.toml) ... error
+  error: subprocess-exited-with-error
+  
+  × Building wheel for pyaudio (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [14 lines of output]
+      running bdist_wheel
+      running build
+      running build_py
+      creating build/lib.linux-aarch64-cpython-311/pyaudio
+      copying src/pyaudio/__init__.py -> build/lib.linux-aarch64-cpython-311/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      creating build/temp.linux-aarch64-cpython-311/src/pyaudio
+      aarch64-linux-gnu-gcc -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/include -I/usr/include -I/home/jano/tars-ai/include -I/usr/include/python3.11 -c src/pyaudio/device_api.c -o build/temp.linux-aarch64-cpython-311/src/pyaudio/device_api.o
+      src/pyaudio/device_api.c:9:10: fatal error: portaudio.h: No such file or directory
+          9 | #include "portaudio.h"
+            |          ^~~~~~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/aarch64-linux-gnu-gcc' failed with exit code 1
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for pyaudio
+Failed to build pyaudio
+ERROR: Could not build wheels for pyaudio, which is required to install pyproject.toml-based projects
