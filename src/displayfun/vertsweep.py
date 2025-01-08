@@ -1,69 +1,57 @@
 import pygame
 import sys
-import math
 
 # Configuration
-FPS = 60
-LINE_COLOR = (0, 255, 255)  # Cyan
-LINE_THICKNESS = 10
-GLOW_INTENSITY = 100
-SCROLL_SPEED = 200  # Pixels per second
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 480  # Adjust to your screen resolution
+LINE_COLOR = (0, 255, 255)  # Cyan color
+SCROLL_SPEED = 2  # Pixels per frame
+GLOW_INTENSITY = 5  # Number of layers for the glow effect
+GLOW_SPREAD = 20  # Pixel spread of the glow
+
+def draw_glowing_line(surface, y_position):
+    """Draws a horizontal line with a diffuse glow effect."""
+    for i in range(GLOW_INTENSITY):
+        alpha = 255 - (i * (255 // GLOW_INTENSITY))
+        glow_color = (*LINE_COLOR, alpha)
+        thickness = GLOW_SPREAD - (i * (GLOW_SPREAD // GLOW_INTENSITY))
+
+        # Create a translucent surface for the glow layer
+        glow_surface = pygame.Surface((SCREEN_WIDTH, thickness), pygame.SRCALPHA)
+        pygame.draw.line(glow_surface, glow_color, (0, thickness // 2), (SCREEN_WIDTH, thickness // 2), thickness)
+
+        # Blit the glow surface onto the main surface
+        surface.blit(glow_surface, (0, y_position - (thickness // 2)))
+
+    # Draw the main solid line
+    pygame.draw.line(surface, LINE_COLOR, (0, y_position), (SCREEN_WIDTH, y_position), 2)
 
 def main():
     pygame.init()
-
-    # Get screen dimensions
-    info = pygame.display.Info()
-    screen_width = info.current_w
-    screen_height = info.current_h
-
-    # Create fullscreen display
-    screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
-    pygame.display.set_caption("Glowing Line Animation")
-
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
     clock = pygame.time.Clock()
+    y_position = 0
+    direction = 1
 
-    # Line position variables
-    line_y = screen_height // 2
-    direction = 1  # 1 for down, -1 for up
-
-    # Animation loop
-    running = True
-    while running:
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = False
+                pygame.quit()
+                sys.exit()
 
-        # Clear screen
+        # Clear the screen
         screen.fill((0, 0, 0))
 
-        # Draw the glowing line effect
-        for glow_offset in range(1, GLOW_INTENSITY // 10 + 1):
-            glow_alpha = max(0, 255 - glow_offset * 10)
-            pygame.draw.line(
-                screen,
-                (LINE_COLOR[0], LINE_COLOR[1], LINE_COLOR[2], glow_alpha),
-                (0, line_y),
-                (screen_width, line_y),
-                LINE_THICKNESS + glow_offset * 2,
-            )
-
-        # Draw the main line
-        pygame.draw.line(screen, LINE_COLOR, (0, line_y), (screen_width, line_y), LINE_THICKNESS)
-
-        # Update line position
-        line_y += direction * SCROLL_SPEED * clock.get_time() / 1000
-        if line_y <= 0 or line_y >= screen_height:
+        # Calculate new position
+        y_position += SCROLL_SPEED * direction
+        if y_position <= 0 or y_position >= SCREEN_HEIGHT:
             direction *= -1
 
-        # Refresh display
+        # Draw the glowing line
+        draw_glowing_line(screen, y_position)
+
+        # Update the display
         pygame.display.flip()
-
-        # Cap the frame rate
-        clock.tick(FPS)
-
-    pygame.quit()
-    sys.exit()
+        clock.tick(60)  # 60 frames per second
 
 if __name__ == "__main__":
     main()
