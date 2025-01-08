@@ -1,0 +1,2 @@
+#anomano display fun for TARS
+pygame
