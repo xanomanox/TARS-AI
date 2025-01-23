@@ -1,29 +1,33 @@
-import smbus
-import sys
+import board
+import busio
+import adafruit_max9744
+
 
 I2C_BUS = 1
-I2C_ADDRESS = 0x40
+I2C_ADDRESS = 0x4B
 MIN_VOLUME = 0
 MAX_VOLUME = 63
 """
-In the TARS system, volume control is not set 
+PACKAGE DEPENDENCIES:
+apt: python3-smbus, i2c-tools these are the same required for servo control.
+pip: adafruit-blinka, adafruit-circuitpython-max9744  | TODO: add these to requirements.txt
 """
-def set_volume(bus, volume):
+def set_volume(amp: adafruit_max9744.MAX9744, volume):
     """
     sets amp volume via i2c
     """
-    register = 0x00
-    bus.write_byte_data(I2C_ADDRESS,register,volume)
+    amp.volume = volume
 
 def main():
     #initialize i2c
     try:
-        bus = smbus.SMBus(I2C_BUS)
+        bus = busio.I2C(board.SCL, board.SDA)
+        amp = adafruit_max9744.MAX9744(bus, address=I2C_ADDRESS)
     except FileNotFoundError:
         print(f"no device found")
 
     while True:
-        print("\n==== MAX9744 VOL CONTROL")
+        print("\n==== MAX9744 VOL TEST CONTROL ====")
         print("1. set volume")
         print("2. exit")
 
@@ -41,7 +45,7 @@ def main():
                 print(f"Error: value out of range")
 
             try:
-                set_volume(bus, volume_val)
+                set_volume(amp, volume_val)
                 print(f"Volume set to {volume_val}")
             except IOError as e:
                 print(f"Error writing to i2c device {e}")
