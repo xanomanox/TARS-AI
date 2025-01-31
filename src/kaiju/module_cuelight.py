@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 
 # Define the GPIO pin for the LED
-LED_GPIO = 17  # Change if needed
+LED_GPIO = 13  # Change if needed
 
 # GPIO setup (runs when module is imported)
 GPIO.setmode(GPIO.BCM)
